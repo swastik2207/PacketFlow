@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { FiCopy, FiCheck } from 'react-icons/fi';
 
 interface InviteCodeProps {
-  port: number | null;
+  port: string | null;
 }
 
 export default function InviteCode({ port }: InviteCodeProps) {
@@ -13,7 +13,7 @@ export default function InviteCode({ port }: InviteCodeProps) {
   if (!port) return null;
   
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(port.toString());
+    navigator.clipboard.writeText(port);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

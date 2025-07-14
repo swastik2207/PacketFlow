@@ -4,7 +4,7 @@ import p2p.controller.FileController;
 import java.io.IOException;
 
 /**
- * PeerLink - P2P File Sharing Application
+ * PacketFlow - P2P File Sharing Application
  */
 public class App {
     public static void main(String[] args) {
@@ -16,11 +16,12 @@ public class App {
             System.out.println("PeerLink server started on port 8080");
             System.out.println("UI available at http://localhost:3000");
             
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> { 
                 System.out.println("Shutting down server...");
                 fileController.stop();
             }));
             
+        
             System.out.println("Press Enter to stop the server");
             System.in.read();
             

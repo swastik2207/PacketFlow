@@ -10,7 +10,7 @@ export default function Home() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [port, setPort] = useState<number | null>(null);
+  const [port, setPort] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'upload' | 'download'>('upload');
 
   const handleFileUpload = async (file: File) => {
@@ -28,6 +28,7 @@ export default function Home() {
       });
       
       setPort(response.data.port);
+      console.log('File uploaded successfully:', response.data.port);
     } catch (error) {
       console.error('Error uploading file:', error);
       alert('Failed to upload file. Please try again.');
@@ -36,12 +37,12 @@ export default function Home() {
     }
   };
   
-  const handleDownload = async (port: number) => {
+  const handleDownload = async (port: string) => {
     setIsDownloading(true);
     
     try {
       // Request download from Java backend
-      const response = await axios.get(`/api/download/${port}`, {
+      const response = await axios.get(`/api/download/${encodeURIComponent(port)}`, {
         responseType: 'blob',
       });
       
@@ -86,7 +87,7 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <header className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-blue-600 mb-2">PeerLink</h1>
+        <h1 className="text-4xl font-bold text-blue-600 mb-2">PacketFlow</h1>
         <p className="text-xl text-gray-600">Secure P2P File Sharing</p>
       </header>
       

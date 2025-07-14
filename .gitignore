@@ -10,7 +10,12 @@ target/
 .settings/
 .classpath
 .project
-.vscode
+.vscode/
+
+src/main/resources/
+
+
+
 
 # Node.js
 ui/node_modules/

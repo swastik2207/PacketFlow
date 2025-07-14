@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import p2p.utils.AES256Util;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -44,6 +44,7 @@ public class FileController {
     public void start() {
         server.start();
         System.out.println("API server started on port " + server.getAddress().getPort());
+      
     }
     
     public void stop() {
@@ -221,10 +222,14 @@ public class FileController {
                 }
                 
                 int port = fileSharer.offerFile(filePath);
+
+
+
                 
                 new Thread(() -> fileSharer.startFileServer(port)).start();
                 
-                String jsonResponse = "{\"port\": " + port + "}";
+                String encryptedPort = AES256Util.encrypt(String.valueOf(port));
+                String jsonResponse = "{\"port\": \"" + encryptedPort + "\"}";
                 headers.add("Content-Type", "application/json");
                 exchange.sendResponseHeaders(200, jsonResponse.getBytes().length);
                 try (OutputStream os = exchange.getResponseBody()) {
@@ -258,10 +263,14 @@ public class FileController {
             }
             
             String path = exchange.getRequestURI().getPath();
-            String portStr = path.substring(path.lastIndexOf('/') + 1);
+            String prefix = "/download/";
+                String portStr = path.substring(prefix.length());
+            System.out.println("Download request for port: " + portStr);
             
             try {
-                int port = Integer.parseInt(portStr);
+                String decryptedPortStr = AES256Util.decrypt(portStr);
+ 
+                int port =  Integer.parseInt(decryptedPortStr);
                 
                 try (Socket socket = new Socket("localhost", port);
                      InputStream socketInput = socket.getInputStream()) {
@@ -318,6 +327,14 @@ public class FileController {
             } catch (NumberFormatException e) {
                 String response = "Bad Request: Invalid port number";
                 exchange.sendResponseHeaders(400, response.getBytes().length);
+                try (OutputStream os = exchange.getResponseBody()) {
+                    os.write(response.getBytes());
+                }
+            }
+            catch (Exception e) {
+                System.err.println("Error processing download request: " + e.getMessage());
+                String response = "Server error: " + e.getMessage();
+                exchange.sendResponseHeaders(500, response.getBytes().length);
                 try (OutputStream os = exchange.getResponseBody()) {
                     os.write(response.getBytes());
                 }
