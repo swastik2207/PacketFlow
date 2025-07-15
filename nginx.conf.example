@@ -2,10 +2,14 @@ server {
     listen 80;
     server_name _; # Catch-all for HTTP requests
 
+    client_max_body_size 100M;
+
     # Backend API
     location /api/ {
         proxy_pass http://localhost:8080/;
         proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_request_buffering off;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;

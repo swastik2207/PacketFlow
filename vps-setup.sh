@@ -67,6 +67,9 @@ server {
     listen 80;
     server_name _; # Catch-all for HTTP requests
 
+    client_max_body_size 100M;
+
+
     # Backend API
     location /api/ {
         proxy_pass http://localhost:8080/;
