@@ -34,13 +34,13 @@ public class AES256Util {
     System.arraycopy(encrypted, 0, combined, iv.length, encrypted.length);
 
 
-    return Base64.getUrlEncoder().withoutPadding().encodeToString(combined);
+    return Base62.encode(combined);
 }
 
     // Decrypts ciphertext with AES-256-GCM
     public static String decrypt(String base64CipherText) throws Exception {
           byte[] key = AESKeyLoader.loadKey();
-        byte[] decoded = Base64.getDecoder().decode(base64CipherText);
+        byte[] decoded = Base62.decode(base64CipherText);
 
         byte[] iv = new byte[IV_SIZE];
         byte[] encrypted = new byte[decoded.length - IV_SIZE];
