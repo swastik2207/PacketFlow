@@ -1,4 +1,4 @@
-# PeerLink UI
+# PacketFlow UI
 
 This is the frontend UI for the PeerLink P2P file sharing application. It's built with Next.js, TypeScript, and Tailwind CSS.
 
